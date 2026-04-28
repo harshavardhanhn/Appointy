@@ -104,7 +104,13 @@ const updateProfile = async (req, res) => {
             return res.json({ success: false, message: "Data Missing" })
         }
 
-        await userModel.findByIdAndUpdate(userId, { name, phone, address: JSON.parse(address), dob, gender })
+        await userModel.findByIdAndUpdate(userId, { 
+            name, 
+            phone, 
+            address: address ? JSON.parse(address) : {}, 
+            dob, 
+            gender 
+        })
 
         if (imageFile) {
                 // Use local uploaded file
@@ -187,7 +193,7 @@ const cancelAppointment = async (req, res) => {
         const appointmentData = await appointmentModel.findById(appointmentId)
 
         // verify appointment user 
-        if (appointmentData.userId !== userId) {
+        if (appointmentData.userId.toString() !== userId.toString()) {
             return res.json({ success: false, message: 'Unauthorized action' })
         }
 

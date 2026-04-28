@@ -14,10 +14,22 @@ const storage = multer.diskStorage({
         cb(null, uploadDir)
     },
     filename: function (req, file, callback) {
-        callback(null, `${Date.now()}-${file.originalname}`)
+        // Prevent path traversal by extracting just the base name
+        const safeName = path.basename(file.originalname);
+        callback(null, `${Date.now()}-${safeName}`)
     }
 });
 
-const upload = multer({ storage })
+const fileFilter = (req, file, cb) => {
+    // Only allow images
+    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+    if (allowedMimeTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Invalid file type. Only JPEG, PNG, and WEBP are allowed.'), false);
+    }
+};
+
+const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024 } }) // 5MB limit
 
 export default upload

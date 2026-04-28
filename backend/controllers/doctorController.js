@@ -90,7 +90,8 @@ const doctorList = async (req, res) => {
 // Toggle doctor's availability
   const changeAvailability = async (req, res) => {
   try {
-    const { docId } = req.body;
+    // Prevent IDOR: if req.user is set (doctor), use their ID. Otherwise use req.body.docId (admin).
+    const docId = req.user ? req.user.id : req.body.docId;
 
     if (!docId) {
       return res.status(400).json({ success: false, message: "Doctor ID missing" });
