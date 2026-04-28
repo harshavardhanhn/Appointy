@@ -54,9 +54,7 @@ const connectDB = async () => {
     console.error('- If SRV/DNS lookups are blocked on your network, use a non-SRV connection string and set MONGODB_URI_NOSRV.')
     console.error('- Try switching DNS to 8.8.8.8 or 1.1.1.1 or test from a different network (mobile hotspot).')
 
-    // Do not exit the process here so the server can still start for local development.
-    // The rest of the app should handle a missing DB connection gracefully.
-    return
+    process.exit(1)
   }
 }
 
